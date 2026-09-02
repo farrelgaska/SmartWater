@@ -6,7 +6,6 @@ import { webRoutes } from '../routes/routePaths.js';
 const items = [
   { label: 'Dashboard', to: webRoutes.dlh, icon: 'dashboard', end: true },
   { label: 'Monitoring', to: webRoutes.dlhMonitoring, icon: 'monitoring', end: true },
-  { label: 'Alerts', to: webRoutes.dlhAlerts, icon: 'alerts', end: true },
   { label: 'AI Analysis', to: webRoutes.dlhAnalysis, icon: 'analysis', end: true },
 ];
 

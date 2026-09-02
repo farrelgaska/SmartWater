@@ -31,7 +31,7 @@ The inspected mockups show an alerts list, monitoring detail, and AI Analysis de
 
 ## Visible navigation note
 
-The inspected desktop shells visibly label Dashboard, Monitoring, Alerts, AI Analysis, and System Admin. Only the seven supplied MVP screen concepts receive routes in this document; unlabeled drill-downs resolve to documented screen sections or remain deferred until a distinct supplied screen exists.
+The web primary navigation is now Dashboard, Monitoring, AI Analysis, and System Admin. Alert and incident information remains contextual within Dashboard/Monitoring; the legacy `/dlh/alerts` path redirects to `/dlh/monitoring`.
 
 
 ## Application ownership
@@ -44,5 +44,5 @@ The /login concept is intentionally present in both independent apps; authentica
 
 ## Phase 8.5 navigation shells
 
-The desktop DLH navigation now exposes minimal, non-live route shells at `/dlh/monitoring`, `/dlh/alerts`, and `/dlh/ai-analysis` so visible navigation remains functional. These are development placeholders, not additional completed screen concepts. Administrator navigation remains limited to `/admin/system`.
+The desktop DLH navigation exposes `/dlh/monitoring` and `/dlh/ai-analysis` alongside the `/dlh` dashboard. `/dlh/alerts` remains only as a compatibility redirect. Administrator navigation remains limited to `/admin/system`, with user/access management inside that screen.
 

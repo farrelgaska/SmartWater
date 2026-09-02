@@ -5,19 +5,27 @@ import AuthLayout from './layouts/AuthLayout.jsx';
 import DLHLayout from './layouts/DLHLayout.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
 import SystemPage from './pages/admin/SystemPage.jsx';
+import ProfilePage from './pages/admin/ProfilePage.jsx';
 import DashboardPage from './pages/dlh/DashboardPage.jsx';
-import DLHSectionPage from './pages/dlh/DLHSectionPage.jsx';
+import MonitoringPage from './pages/dlh/MonitoringPage.jsx';
+import AIAnalysisPage from './pages/dlh/AIAnalysisPage.jsx';
 
 export default function App() {
   return <Routes>
     <Route element={<AuthLayout />}><Route path={webRoutes.login} element={<LoginPage />} /></Route>
     <Route element={<DLHLayout />}>
       <Route path={webRoutes.dlh} element={<DashboardPage />} />
-      <Route path={webRoutes.dlhMonitoring} element={<DLHSectionPage title="Regional Monitoring" description="Reserved shell for DLH station monitoring workflows." />} />
-      <Route path={webRoutes.dlhAlerts} element={<DLHSectionPage title="Regional Alerts" description="Reserved shell for DLH incident review workflows." />} />
-      <Route path={webRoutes.dlhAnalysis} element={<DLHSectionPage title="AI Analysis" description="Reserved shell for decision-support review; no model or controls are connected." />} />
+      <Route path={webRoutes.dlhMonitoring} element={<MonitoringPage />} />
+      <Route path={webRoutes.dlhAlerts} element={<Navigate to={webRoutes.dlhMonitoring} replace />} />
+      <Route path={webRoutes.dlhAnalysis} element={<AIAnalysisPage />} />
     </Route>
-    <Route element={<AdminLayout />}><Route path={webRoutes.admin} element={<SystemPage />} /></Route>
+    <Route element={<AdminLayout />}>
+      <Route path={webRoutes.adminDashboard} element={<DashboardPage />} />
+      <Route path={webRoutes.adminMonitoring} element={<MonitoringPage />} />
+      <Route path={webRoutes.adminAnalysis} element={<AIAnalysisPage />} />
+      <Route path={webRoutes.admin} element={<SystemPage />} />
+      <Route path={webRoutes.adminProfile} element={<ProfilePage />} />
+    </Route>
     <Route path="/" element={<Navigate to={webRoutes.login} replace />} />
     <Route path="*" element={<Navigate to="/login" replace />} />
   </Routes>;
