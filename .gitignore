@@ -9,4 +9,7 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 *.log
+.venv/
+.pytest_cache/
+*.db
 
