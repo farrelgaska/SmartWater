@@ -1,12 +1,12 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
-import { Activity, AlertTriangle, CalendarDays, CheckCircle2, CircleAlert, CircleHelp, Filter, Map, Plus, Search, Satellite, ShieldCheck, WifiOff, X } from 'lucide-react';
+import { Activity, AlertTriangle, CalendarDays, CheckCircle2, CircleAlert, CircleHelp, Filter, Plus, Search, ShieldCheck, WifiOff, X } from 'lucide-react';
 import PageContainer from '../../components/common/PageContainer.jsx';
+import RegionalMap from '../../components/maps/RegionalMap.jsx';
 import LoadingState from '../../components/feedback/LoadingState.jsx';
 import ErrorState from '../../components/feedback/ErrorState.jsx';
 import { getDlhDashboard } from '../../services/dlhService.js';
 
 const statusIcons = { normal: CheckCircle2, warning: AlertTriangle, critical: CircleAlert, offline: WifiOff };
-const statusLabels = { normal: 'Normal', warning: 'Warning', critical: 'Critical', offline: 'Offline' };
 
 function KpiCard({ item }) {
   const Icon = statusIcons[item.tone] || Activity;
@@ -23,7 +23,6 @@ export default function DashboardPage() {
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
   const [attentionOnly, setAttentionOnly] = useState(false);
-  const [mapMode, setMapMode] = useState('2D');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -48,7 +47,7 @@ export default function DashboardPage() {
       <header className="dlh-page-header"><div><p className="eyebrow">DLH · REGIONAL OVERSIGHT</p><h1>Pekalongan Regional Overview</h1><p>Real-time environmental monitoring and industrial compliance dashboard.</p></div><button type="button" className="dlh-date-control"><CalendarDays size={17} aria-hidden="true" />Oct 24, 2023 - Live</button></header>
       <section className="dlh-kpi-grid" aria-label="Station summary">{dashboard.kpis.map((item) => <KpiCard key={item.label} item={item} />)}</section>
       <div className="dlh-main-grid">
-        <section className="dlh-card dlh-map-card" aria-labelledby="map-title"><div className="dlh-card-header"><div><p className="eyebrow">REGIONAL GIS MAP</p><h2 id="map-title">Pekalongan</h2></div><div className="dlh-toggle" role="group" aria-label="Map view"><button type="button" className={mapMode === '2D' ? 'active' : ''} onClick={() => setMapMode('2D')}><Map size={15} aria-hidden="true" />2D</button><button type="button" className={mapMode === 'Satellite' ? 'active' : ''} onClick={() => setMapMode('Satellite')}><Satellite size={15} aria-hidden="true" />Satellite</button></div></div><div className={`dlh-map-visual dlh-map-${mapMode.toLowerCase()}`} role="img" aria-label={`Pekalongan station map in ${mapMode} view`}><span className="dlh-map-label dlh-map-label-north">NORTH COASTAL</span><span className="dlh-map-label dlh-map-label-city">PEKALONGAN</span>{dashboard.stations.map((station) => { const Icon = statusIcons[station.status]; return <span key={station.id} className={`dlh-map-marker dlh-marker-${station.status}`} style={{ left: `${station.x}%`, top: `${station.y}%` }} title={station.name}><Icon size={13} aria-hidden="true" /></span>; })}<div className="dlh-map-scale">2 km</div></div><div className="dlh-map-legend">{Object.entries(statusLabels).map(([key, label]) => <span key={key}><i className={`dlh-legend-dot dlh-marker-${key}`} />{label}</span>)}</div></section>
+        <section className="dlh-card dlh-map-card" aria-labelledby="map-title"><RegionalMap locations={dashboard.mapLocations} /></section>
         <section className="dlh-card dlh-incident-card" aria-labelledby="incident-title"><div className="dlh-card-header"><div><p className="eyebrow">LIVE INCIDENT FEED</p><h2 id="incident-title">Latest activity</h2></div><span className="dlh-live-dot">LIVE</span></div><div className="dlh-incident-list">{dashboard.incidents.map((incident) => <IncidentCard key={incident.id} incident={incident} onAction={(action) => notify(`${action} queued for human follow-up.`)} />)}</div></section>
       </div>
       <section className="dlh-card dlh-compliance-card" aria-labelledby="compliance-title"><div className="dlh-card-header"><div><p className="eyebrow">INDUSTRIAL COMPLIANCE</p><h2 id="compliance-title">Monitored facilities</h2></div><div className="dlh-table-tools"><label className="dlh-search"><Search size={15} aria-hidden="true" /><span className="sr-only">Search facilities</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search facilities" /></label><button type="button" className={`dlh-filter-button ${attentionOnly ? 'active' : ''}`} onClick={() => setAttentionOnly((value) => !value)}><Filter size={15} aria-hidden="true" />{attentionOnly ? 'Attention only' : 'Filter'}</button></div></div><div className="dlh-table-scroll"><table><thead><tr><th>Industry</th><th>Location</th><th>Status</th><th>Latest parameters</th><th>Updated</th></tr></thead><tbody>{industries.map((industry) => <tr key={industry.id}><td><strong>{industry.name}</strong><small>{industry.idLabel}</small></td><td>{industry.location}</td><td><span className={`status-badge status-${industry.status}`}>{industry.statusLabel}</span></td><td><div className="dlh-parameter-list">{industry.parameters.map((parameter) => <span key={parameter.label}><b>{parameter.label}</b> {parameter.value}</span>)}</div></td><td>{industry.lastUpdate}</td></tr>)}{industries.length === 0 && <tr><td colSpan="5" className="dlh-empty-row">No facilities match this view.</td></tr>}</tbody></table></div><div className="dlh-table-footer"><span>Showing {industries.length} of {dashboard.industries.length} facilities</span><span>Page 1 of 1</span></div></section>

@@ -13,6 +13,13 @@
     { id: 'station-04', name: 'Tirto', status: 'offline', x: 42, y: 68 },
     { id: 'station-05', name: 'Pekalongan Barat', status: 'normal', x: 20, y: 61 },
   ],
+  mapLocations: [
+    { id: 'map-industry-sejahtera', name: 'Batik Sejahtera', type: 'industry', latitude: -6.889, longitude: 109.668, status: 'normal', relatedIndustryId: 'industry-sejahtera', parameter: 'Turbidity', reading: '22 NTU', x: 56, y: 48 },
+    { id: 'map-industry-textindo', name: 'PT. Pekalongan Textindo', type: 'industry', latitude: -6.913, longitude: 109.641, status: 'normal', relatedIndustryId: 'industry-textindo', parameter: 'pH', reading: '7.2', x: 30, y: 38 },
+    { id: 'map-monitoring-inlet', name: 'Inlet Limbah 02', type: 'monitoring-point', latitude: -6.882, longitude: 109.684, status: 'warning', relatedIndustryId: 'industry-sejahtera', parameter: 'Debit / Volume', reading: 'Waspada', x: 72, y: 28 },
+    { id: 'map-monitoring-buaran', name: 'Buaran Outlet', type: 'monitoring-point', latitude: -6.921, longitude: 109.672, status: 'critical', relatedIndustryId: 'industry-sejahtera', parameter: 'TSS', reading: '310 mg/L', x: 63, y: 60 },
+    { id: 'map-station-tirto', name: 'Tirto Station', type: 'monitoring-point', latitude: -6.931, longitude: 109.62, status: 'offline', relatedIndustryId: 'industry-lestari', parameter: 'Sensor health', reading: 'Offline', x: 42, y: 68 },
+  ],
   incidents: [
     {
       id: 'incident-tss', severity: 'critical', title: 'TSS Alert', time: '2 mins ago',
@@ -55,6 +62,19 @@
     riskScore: 75, horizonHours: 24, label: 'Medium-High Risk',
     summary: 'High tides combined with heavy rainfall may increase runoff from textile hubs.',
     actionLabel: 'View Mitigation Plan',
+  },
+  aiAnalysis: {
+    riskScore: 75,
+    horizonHours: 24,
+    riskLevel: 'warning',
+    summary: 'Turbidity and low pH trends may increase regional discharge risk over the next 24 hours.',
+    factors: [
+      { label: 'Turbidity spikes', detail: '3 stations above configured range', contribution: '+28%' },
+      { label: 'pH drift', detail: 'Buaran and Kedungwuni trending low', contribution: '+19%' },
+      { label: 'Device instability', detail: '1 station reporting suspect readings', contribution: '+11%' },
+    ],
+    affected: ['Batik Sejahtera Abadi', 'PT. Pekalongan Textindo', 'Inlet Limbah 02'],
+    recommendations: ['Review affected station readings with the environmental team.', 'Prioritize a human inspection of the Buaran outlet.', 'Record follow-up actions in the incident log.'],
   },
 };
 

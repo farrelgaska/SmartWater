@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { ArrowRight, CircleHelp, Droplets, Eye, EyeOff, Globe2, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
+import { ArrowRight, CircleHelp, Eye, EyeOff, Globe2, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { webRoutes } from '../../routes/routePaths.js';
 
@@ -45,7 +45,7 @@ export default function LoginPage() {
   return (
     <main className="login-shell">
       <section className="login-card" aria-labelledby="login-title">
-        <div className="login-brand-mark" aria-hidden="true"><Droplets size={30} strokeWidth={2.5} /></div>
+        <div className="login-brand-mark"><img src="/logosmartwater.png" alt="SmartWater" /></div>
         <header className="login-heading"><h1 id="login-title">SmartWater Analytics Platform</h1><p>Pantau &amp; Kelola Kualitas Air Limbah Industri<br />Secara Real-Time</p></header>
         <form className="login-form" onSubmit={handleSubmit} noValidate>
           <div className="login-field"><label htmlFor="login-identifier">Email atau Username</label><div className="login-input-wrap"><UserRound size={19} aria-hidden="true" /><input id="login-identifier" name="identifier" type="text" autoComplete="username" placeholder="nama@perusahaan.com" value={identifier} onChange={(event) => setIdentifier(event.target.value)} aria-invalid={Boolean(errors.identifier)} aria-describedby={errors.identifier ? 'login-identifier-error' : undefined} /></div>{errors.identifier && <p className="login-error" id="login-identifier-error" role="alert">{errors.identifier}</p>}</div>

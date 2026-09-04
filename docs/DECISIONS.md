@@ -96,3 +96,10 @@ Lightweight ADR record. Status values are `Accepted`, `Proposed`, or `Deferred`;
 - **Reason:** Desktop-first Administrator/DLH and mobile-first Industry responsibilities need isolated navigation, testing, maintenance, and future deployment scope without introducing a workspace tool.
 - **Consequences:** Small duplicated foundations are acceptable; do not create a shared package until repetition is proven. apps/mobile is not React Native.
 - **Status:** Accepted for Phase 1.
+
+## ADR-013 — Fixed web shell with scrollable content
+
+- **Decision:** The web shell uses a `100dvh` flex layout; the sidebar and top header remain stable while `PageContainer` owns vertical scrolling. Monitoring owns device and parameter views; System Admin owns user/access views.
+- **Reason:** Keeps the desktop dashboard shell aligned with the supplied mockups and separates operational monitoring from administration without adding speculative routes.
+- **Consequences:** Narrow web layouts retain their existing stacked navigation behavior; legacy DLH Alerts links redirect into Monitoring.
+- **Status:** Accepted for MVP.
