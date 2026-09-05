@@ -1,7 +1,8 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { ArrowRight, CircleHelp, Eye, EyeOff, Globe2, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { mobileRoutes } from '../../routes/routePaths.js';
+import { login } from '../../services/authService.js';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function LoginPage() {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const nextErrors = {};
     if (!identifier.trim()) nextErrors.identifier = 'Email atau username wajib diisi.';
@@ -26,7 +27,15 @@ export default function LoginPage() {
     setErrors({});
     setMessage('');
     setIsSubmitting(true);
-    navigate(mobileRoutes.industry, { replace: true });
+
+    try {
+      await login(identifier.trim(), password);
+      navigate(mobileRoutes.industry, { replace: true });
+    } catch (err) {
+      setMessage(err.message || 'Gagal masuk. Periksa email dan password Anda.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (

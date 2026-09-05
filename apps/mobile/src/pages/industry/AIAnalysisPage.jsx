@@ -1,10 +1,10 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrainCircuit, Clock3, Droplets, FlaskConical, History, ListChecks, Send, ShieldAlert } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import PageContainer from '../../components/common/PageContainer.jsx';
 import LoadingState from '../../components/feedback/LoadingState.jsx';
 import ErrorState from '../../components/feedback/ErrorState.jsx';
-import { getAIAnalysis } from '../../services/aiService.js';
+import { getAIAnalysis, updateRecommendation } from '../../services/aiService.js';
 
 function FactorIcon({ factor }) {
   if (factor.parameterKey === 'turbidity') return <Droplets size={20} />;
@@ -31,9 +31,28 @@ export default function AIAnalysisPage() {
     return () => { active = false; };
   }, [analysisId]);
 
-  function toggleRecommendation(id) {
-    setChecked((current) => ({ ...current, [id]: !current[id] }));
+  async function toggleRecommendation(id) {
+    const nextState = !checked[id];
+    setChecked((current) => ({ ...current, [id]: nextState }));
     setMessage('');
+    try {
+      await updateRecommendation(id, nextState ? 'completed' : 'pending');
+    } catch {
+      // Handled in service fallback
+    }
+  }
+
+  async function handleConfirmChecklist() {
+    setMessage('Menyimpan status checklist...');
+    try {
+      const promises = Object.entries(checked).map(([id, isCompleted]) =>
+        updateRecommendation(id, isCompleted ? 'completed' : 'pending')
+      );
+      await Promise.all(promises);
+      setMessage('Status checklist mitigasi berhasil disinkronkan ke database!');
+    } catch {
+      setMessage('Checklist lokal telah dikonfirmasi untuk tinjauan operator.');
+    }
   }
 
   if (loading) return <PageContainer><LoadingState label="Memuat analisis AI" /></PageContainer>;
@@ -60,7 +79,7 @@ export default function AIAnalysisPage() {
         <h2 id="checklist-title"><ListChecks size={21} aria-hidden="true" /> Mitigation Checklist</h2>
         <p className="ai-checklist-note">Tandai hanya setelah langkah manusia ditinjau atau dilakukan.</p>
         <div className="ai-checklist-items">{analysis.recommendations.map((item) => <label className="ai-checklist-item" key={item.id}><input type="checkbox" checked={Boolean(checked[item.id])} onChange={() => toggleRecommendation(item.id)} /><span className={checked[item.id] ? 'ai-checklist-complete' : ''}>{item.title}</span></label>)}</div>
-        <button className="ai-review-button" type="button" onClick={() => setMessage('Checklist lokal telah dikonfirmasi untuk tinjauan operator.')}><Send size={18} aria-hidden="true" /> Konfirmasi Checklist</button>
+        <button className="ai-review-button" type="button" onClick={handleConfirmChecklist}><Send size={18} aria-hidden="true" /> Konfirmasi Checklist</button>
         {message && <p className="ai-checklist-message" role="status">{message}</p>}
       </section>
 

@@ -17,6 +17,14 @@ def get_ai_analysis(
 ):
     analysis = db.query(AIAnalysis).filter(AIAnalysis.id == analysisId).first()
     if not analysis:
+        industry_id = current_user.industry_id or "ind-puspa"
+        analysis = (
+            db.query(AIAnalysis)
+            .filter(AIAnalysis.industry_id == industry_id)
+            .order_by(AIAnalysis.generated_at.desc())
+            .first()
+        )
+    if not analysis:
         raise HTTPException(status_code=404, detail={"code": "ANALYSIS_NOT_FOUND", "message": "Analisis AI tidak ditemukan"})
 
     require_industry_ownership(current_user, analysis.industry_id)

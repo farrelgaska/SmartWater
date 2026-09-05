@@ -33,6 +33,9 @@ app = FastAPI(
 )
 
 # CORS configuration
+# Note: Do NOT mix allow_origins list with allow_origin_regex in Starlette 1.6.x
+# as it causes OPTIONS preflight to return 400 Bad Request.
+# Use allow_origin_regex alone to cover all localhost/127.0.0.1 ports.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,

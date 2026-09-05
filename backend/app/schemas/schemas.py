@@ -9,7 +9,7 @@ class BaseSchema(BaseModel):
 
 # --- Auth & Session ---
 class SessionRequest(BaseModel):
-    email: EmailStr
+    email: str
     password: str
 
 

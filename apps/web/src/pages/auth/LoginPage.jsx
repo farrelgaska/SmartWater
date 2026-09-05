@@ -1,7 +1,8 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { ArrowRight, CircleHelp, Eye, EyeOff, Globe2, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { webRoutes } from '../../routes/routePaths.js';
+import { login } from '../../services/authService.js';
 
 function resolveDevelopmentRole(identifier) {
   const value = identifier.trim().toLowerCase();
@@ -20,7 +21,7 @@ export default function LoginPage() {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const nextErrors = {};
     if (!identifier.trim()) nextErrors.identifier = 'Email atau username wajib diisi.';
@@ -30,16 +31,19 @@ export default function LoginPage() {
       setMessage('Periksa kembali data yang wajib diisi.');
       return;
     }
-    const role = resolveDevelopmentRole(identifier);
-    if (!role) {
-      setErrors({ identifier: 'Gunakan username Administrator atau DLH untuk demo lokal.' });
-      setMessage('Akun demo tidak dikenali.');
-      return;
-    }
     setErrors({});
     setMessage('');
     setIsSubmitting(true);
-    navigate(role === 'admin' ? webRoutes.admin : webRoutes.dlh, { replace: true });
+
+    try {
+      const data = await login(identifier.trim(), password);
+      const role = data?.user?.role || resolveDevelopmentRole(identifier) || 'admin';
+      navigate(role === 'admin' ? webRoutes.admin : webRoutes.dlh, { replace: true });
+    } catch (err) {
+      setMessage(err.message || 'Gagal masuk. Periksa email dan password Anda.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
